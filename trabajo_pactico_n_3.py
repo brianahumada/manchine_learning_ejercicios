@@ -368,8 +368,8 @@ def ejercicio4():
     # B) Visiblemente los productos A y B, sobre todo el segundo representan una media y mediana considerablemente baja respecto a los otros productos.
     # C) Visiblmente en el gráfico 2 y 3 se visualizan la variación de ventas de en todos los productos en general y sobre todo en la tercera imagen los
     #    productos con mayor dispersión.
-    #        1) Analizar la reposición de los productos en los dístintos días a fin de identificar si el problema es operativo.
-    #        2) Realizar un histograma de ventas por unidad de los mismos días de la semana en la historia, igualando las semanas (mismo numero de semana),
+    #  1) Analizar la reposición de los productos en los dístintos días a fin de identificar si el problema es operativo.
+    #  2) Realizar un histograma de ventas por unidad de los mismos días de la semana en la historia, igualando las semanas (mismo numero de semana),
     #           a fin de identificar la estacionalidad, eventualidad y comportamiento de cada producto o línea especifica.
     # D) Identifiación por producto.
     #     Producto D: Tiene un incremento significativo sobre el inicio de la semana y una caida constante hacia el fin de semana.
@@ -579,5 +579,95 @@ def ejercicio5():
   plt.grid(True)
   plt.show()
 
-ejercicio5()
+#ejercicio5()
 
+"""
+EJERICIO 6
+Se realiza una encuesta a N usuario donde se registran los siguientes datos.
+
+['DNI','GASTOS MENSUALES DE HOGAR','INGRESOS MENSUALES POR HOGAR', 'CANTIDAD DE MIEMBROS QUE VIVEN POR HOGAR','GASTO MENSUAL EN LINEA TELEFÓNICA', 'GASTO MENSUAL POR PAGO DE INTERNET' ]
+
+Realizar la simulación de la carga de datos utilizando la siguiente información adicional:
+
+El 70 % de los encuestados son jóvenes entre 15 y 21 años, el 10% son mayores de 60 años. Sugerencia, utilizar esto para generar los DNI
+Los encuestados son de la provincia de Cordoba. Además el 80 % de la población de esa provincia tiene un grupo familiar de 5 personas. Con ingresos mensuales promedio de $258.000
+Cerca del 80 % de los encuestados Gastan el 90% de sus ingresos, el resto gasta el 80% de sus ingresos.Ayuda, para simular la cantidad de miembros utilizar la distribución normal.
+Del gasto Total por hogar se sabe que se abona un 15 % en telefonía y un 7.8% en servicio de internet.
+Con la información proporcionada, realizar la simulación de las encuestas de 100 y 1000 personas.
+
+Calcular el valor medio y desvio estandar de los gastos mensuales, ingresos mensuales y pagos de servicios.
+Plotear los datos de los ingesos , y gastos en gráficos de barra por separado y evidenciar la media y desvio estandar.
+Calcular la proporciona de jóvenes menores a 21 encuestados. Mostrar sus datos de grupos familiares, gastos en servicios de internet y telefonía. Concluir algo en base a esta información.
+Realizar un histograma con el dato del grupo familiar, y concluir algo acerca de la distribución de probabilidad.
+"""
+
+def ejercicio6(N):
+  #SIMULACION DE DATOS
+
+  edad_jovenes = np.random.randint(15, 22, size=int(N * 0.7))  # 15 y 21
+  edad_mayores = np.random.randint(60, 101, size=int(N * 0.1))  # Mayores a 60
+
+  # DNI
+
+  dni_menores=np.random.randint(38000000, 45000000, len(edad_jovenes))  # 15 y 21
+  dni_mayores=np.random.randint(10000000, 25000000, len(edad_mayores))
+
+  # Combinar DNI
+  dni = np.concatenate((dni_menores, dni_mayores))
+
+  # DATOS
+  ingresos_promedio = 258000
+  miembros_promedio = 5
+  gasto_total = ingresos_promedio * 0.9  # 90% de gasto
+  gasto_telefonia = gasto_total * 0.15
+  gasto_internet = gasto_total * 0.078
+
+  #SIMULACION DE ENCUESTAS
+
+  gastos_mensuales = np.random.normal(ingresos_promedio * 0.9, scale=50000, size=int(N*0.8)) #scale = maximo
+  gastos_mensuales_2 = np.random.normal(ingresos_promedio*0.8,scale=50000,size=int(N*0.2))
+  ingresos_mensuales = np.random.normal(ingresos_promedio, scale=40000, size=N)
+  miembros_por_hogar = np.random.normal(miembros_promedio, scale=1.2, size=N)
+  gastos=np.hstack((gastos_mensuales, gastos_mensuales_2))
+
+  #CALCULO DE METRICAS
+
+  mean_gastos = np.mean(gastos)
+  std_gastos = np.std(gastos)
+  mean_ingresos = np.mean(ingresos_mensuales)
+  std_ingresos = np.std(ingresos_mensuales)
+
+  #GRAFICO DE BARRAS
+  categorias = ['Ingresos', 'Gastos']
+  valores_mean = [mean_ingresos, mean_gastos]
+  valores_std = [std_ingresos, std_gastos]
+
+  plt.bar(categorias, valores_mean, yerr=valores_std, color=['blue', 'red'])
+  plt.xlabel('Categorías')
+  plt.ylabel('Monto')
+  plt.title('Ingresos y Gastos Mensuales')
+  plt.show()
+
+  #PROPORCION DE JOVENES < 21
+  prop_jovenes = np.sum(edad_jovenes == '15-21')/N
+
+  gastos_jovenes = gastos_mensuales[edad_jovenes - 15]
+  internet_jovenes = gasto_internet * np.ones_like(gastos_jovenes)
+  telefonia_jovenes = gasto_telefonia * np.ones_like(gastos_jovenes)
+
+  mean_gastos_jovenes = np.mean(gastos_jovenes)
+  mean_internet_jovenes = np.mean(internet_jovenes)
+  mean_telefonia_jovenes = np.mean(telefonia_jovenes)
+
+  #HISTORIGRAMAS
+  plt.hist(miembros_por_hogar, bins=10, color='green', edgecolor='black', alpha=0.7)
+  plt.xlabel('Cantidad de Miembros por Hogar')
+  plt.ylabel('Frecuencia')
+  plt.title('Distribución de Miembros por Hogar')
+  plt.grid(True)
+  plt.show()
+
+n = 100
+d = 1000
+#ejercicio6(n)
+#ejercicio6(d)
