@@ -48,6 +48,7 @@ proporciona herramientas básicas de visualización para ayudarte a entender tus
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import listedColormap
 
 # cargamos un diccionario con datos simulados
 data = {
@@ -58,14 +59,14 @@ data = {
 
 # cargamos un dataframe
 df = pd.DataFrame(data)
-
+"""
 #mostramos
 print("DATAFRAME")
 print(df)
 
 #-----------------CALCULOS CON NAMPY Y PANDAS------------------
 #----------PROMEDIO EDAD--------------------
-promedio_edad = df['edad'].mean() #medioa
+promedio_edad = df['edad'].mean() #media
 print(f'promedio de edad: {promedio_edad}')
 
 #altura maxima
@@ -84,4 +85,43 @@ print(f'Edad doble: \n',edad_doble)
 #--------PLOTEO-------------
 df.plot(x='nombre', y='altura', kind='bar', title='Alturas de persona')
 plt.ylabel('altura (cm)')
+plt.show()
+"""
+url = 'https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv'
+df = pd.read_csv(url)
+
+#manejo de valores nulos
+valores = df.isnull().sum()
+print(valores)
+#eliminar filas con valores nulos
+nuevo_df = df.dropna()
+print(nuevo_df)
+
+#mostrar manejo de valores atipicos
+#obtener estadistica descriptivas
+describe = df.describe()
+print(describe)
+
+#define las distintas variables presentes en la columna variety
+
+varieties = df['variety'].unique()
+print(varieties)
+
+#crea un mapeo de colores con la paleta de colores para el numero de varibales
+
+cmap=plt.get('table',len(varieties))
+
+#asignar un color unico a vada variedad utilizando el mapeo de colores
+colors = [cmap(i) for i in range(len(varieties))]
+df['color']= df['variety'],df['sepal.width'],c = df['color']
+
+#crear el grafico dispercion usando los colores asignados
+
+plt.scatter(df['sepal.length'],df['sepal.width'],c=df['color'])
+
+#etiquetas para los ejes y muestre de grafico
+
+plt.xlabel('longitud de sepalo')
+plt.ylabel('anchura de sepalo')
+plt.title('grafico de dispercion de longitud y anchura de sepalo por valor')
 plt.show()
